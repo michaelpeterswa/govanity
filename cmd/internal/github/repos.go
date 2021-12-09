@@ -30,6 +30,7 @@ type CondensedRepository struct {
 	Fork            bool     `json:"fork"`
 	StargazersCount int      `json:"stargazers_count"`
 	License         CLicense `json:"license"`
+	GoVanityLink    string
 }
 
 type COwner struct {
@@ -168,6 +169,7 @@ func (gh *GitHubRepositories) GetGitHubRepositories(ctx context.Context, s struc
 
 		c := &http.Client{}
 
+		req.SetBasicAuth(s.Username, s.GithubPAT)
 		resp, err := c.Do(req)
 		if err != nil {
 			return err
@@ -218,12 +220,12 @@ func (gh *GitHubRepositories) GetGitHubRepositories(ctx context.Context, s struc
 	return nil
 }
 
-func (gh *GitHubRepositories) GetCurrentGoRepositories() []CondensedRepository {
+func (gh *GitHubRepositories) GetCurrentGoRepositories(settings structs.Settings) []CondensedRepository {
 	gh.mu.Lock()
 	var cr []CondensedRepository
 	for _, repo := range gh.Repositories {
 		if repo.Language == "Go" {
-			cr = append(cr, repo.CondenseGitHubRepository())
+			cr = append(cr, repo.CondenseGitHubRepository(settings))
 		}
 	}
 	defer gh.mu.Unlock()
@@ -231,7 +233,7 @@ func (gh *GitHubRepositories) GetCurrentGoRepositories() []CondensedRepository {
 	return cr
 }
 
-func (gh *GitHubRepository) CondenseGitHubRepository() CondensedRepository {
+func (gh *GitHubRepository) CondenseGitHubRepository(settings structs.Settings) CondensedRepository {
 	return CondensedRepository{
 		Name:     gh.Name,
 		FullName: gh.FullName,
@@ -247,11 +249,12 @@ func (gh *GitHubRepository) CondenseGitHubRepository() CondensedRepository {
 		License: CLicense{
 			Name: gh.License.Name,
 		},
+		GoVanityLink: fmt.Sprintf("%s://%s/%s", settings.Protocol, settings.Domain, gh.Name),
 	}
 }
 
 func (gh *GitHubRepositories) GetValidRepositories(settings structs.Settings) map[string]CondensedRepository {
-	existing := gh.GetCurrentGoRepositories()
+	existing := gh.GetCurrentGoRepositories(settings)
 
 	matches := make(map[string]CondensedRepository)
 	for _, repo := range existing {

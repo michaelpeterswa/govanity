@@ -66,12 +66,18 @@ func main() {
 	http.Handle("/", r)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("cmd/internal/static"))))
 
-	http.ListenAndServe("localhost:8080", nil)
+	http.ListenAndServe(":8080", nil)
 }
 
 func (h Handler) HomeHandler(writer http.ResponseWriter, request *http.Request) {
+	var repos []github.CondensedRepository
+	for _, v := range h.valids {
+		repos = append(repos, v)
+	}
+
 	homeData := templates.Homepage{
-		Title: "nw.codes",
+		Title: h.settings.Domain,
+		Repos: repos,
 	}
 	h.templates["home"].Execute(writer, homeData)
 }
@@ -82,11 +88,9 @@ func (h Handler) VanityHandler(writer http.ResponseWriter, request *http.Request
 
 	if v, ok := h.valids[repo]; ok {
 		repoData := templates.Repo{
-			Title:       v.FullName,
-			Name:        v.Name,
-			Description: v.Description,
-			GoImport:    "importlol",
-			GoSource:    "sourcelol",
+			Repo:     v,
+			GoImport: h.CreateGoImportMetaTag(v),
+			GoSource: h.CreateGoSourceMetaTag(v),
 		}
 
 		h.templates["repo"].Execute(writer, repoData)
@@ -95,4 +99,19 @@ func (h Handler) VanityHandler(writer http.ResponseWriter, request *http.Request
 	writer.WriteHeader(http.StatusNotFound)
 	fmt.Fprint(writer, `{"found":false}`)
 	return
+}
+
+func (h Handler) CreateGoImportMetaTag(repo github.CondensedRepository) string {
+	source := fmt.Sprintf("%s/%s", h.settings.Domain, repo.Name)
+	vcs := "git"
+	site := fmt.Sprintf("https://github.com/%s", repo.FullName)
+	return fmt.Sprintf("%s %s %s", source, vcs, site)
+}
+
+func (h Handler) CreateGoSourceMetaTag(repo github.CondensedRepository) string {
+	source := fmt.Sprintf("%s/%s", h.settings.Domain, repo.Name)
+	link1 := fmt.Sprintf("https://github.com/%s", repo.FullName)
+	link2 := fmt.Sprintf("https://github.com/%s/tree/master{/dir}", repo.FullName)
+	link3 := fmt.Sprintf("https://github.com/%s/blob/master{/dir}/{file}#L{line}", repo.FullName)
+	return fmt.Sprintf("%s %s %s %s", source, link1, link2, link3)
 }

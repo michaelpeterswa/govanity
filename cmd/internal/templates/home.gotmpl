@@ -2,7 +2,6 @@
 
 <html lang="en">
   <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,17 +13,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200&display=swap" rel="stylesheet">
+    <link href="static/styles.css" rel="stylesheet">
   </head>
 
-  <body>
+  <body class="font">
     <section class="section">
-      <div class="container">
-        <h1 class="title">
+      <div class="container pb-4">
+        <h1 class="title has-text-primary is-2">
           {{.Title}}
         </h1>
-        <p class="subtitle">
-          Welcome!
+        <p class="subtitle has-text-grey-light is-6">
+          built with govanity
         </p>
+      </div>
+      <div class="container pt-4">
+        {{range .Repos}}
+          <a class="has-text-link" href="{{.GoVanityLink}}">{{.FullName}}</a>
+        {{end}}
       </div>
 	  </section>
   </body>

@@ -2,11 +2,10 @@
 
 <html lang="en">
   <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{.Title}}</title>
+    <title>{{.Repo.Name}}</title>
     <meta name="description" content="govanity">
     <meta name="author" content="michaelpeterswa">
 
@@ -17,17 +16,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200&display=swap" rel="stylesheet">
+    <link href="static/styles.css" rel="stylesheet">
   </head>
 
   <body>
-    <section class="section">
+    <section class="section font">
       <div class="container">
-        <h1 class="title">
-          {{.Name}}
+        <h1 class="title has-text-primary">
+          {{.Repo.Name}}
         </h1>
-        <p class="subtitle">
-          {{.Description}}
+        <p class="subtitle has-text-grey-light is-6">
+          by {{.Repo.Owner.Login}}
         </p>
+        <p class="subtitle has-text-grey is-5">
+          {{.Repo.License.Name}}
+        </p>
+        <p class="has-text-grey pb-4">
+          {{.Repo.Description}}
+        </p>
+        <code>
+          {{.Repo.GoVanityLink}}
+        </code>
       </div>
 	  </section>
   </body>

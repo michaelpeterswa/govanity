@@ -9,7 +9,7 @@ import (
 )
 
 func InitSettings() (*structs.Settings, error) {
-	fileSettings, err := os.ReadFile("settings.yaml")
+	fileSettings, err := os.ReadFile("config/settings.yaml")
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}

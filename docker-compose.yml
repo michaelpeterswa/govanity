@@ -1,0 +1,10 @@
+---
+version: "3.3"
+
+services:
+  govanity:
+    build: .
+    ports:
+      - 8080:8080
+    volumes:
+      - /mnt/c/Users/Michael Peters/Documents/GitHub/govanity/config:/root/config:ro
