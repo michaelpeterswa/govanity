@@ -28,7 +28,9 @@
       </div>
       <div class="container pt-4">
         {{range .Repos}}
+        <div class="pb-2">
           <a class="has-text-link" href="{{.GoVanityLink}}">{{.FullName}}</a>
+        </div>
         {{end}}
       </div>
 	  </section>
