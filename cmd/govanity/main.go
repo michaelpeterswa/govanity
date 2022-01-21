@@ -19,11 +19,18 @@ type Handler struct {
 	settings  structs.Settings
 	valids    map[string]github.CondensedRepository
 	templates map[string]*template.Template
+	logger    *zap.Logger
 }
 
 func main() {
 	logger, _ := zap.NewProduction()
-	defer logger.Sync()
+	defer func() {
+		err := logger.Sync()
+		if err != nil {
+			logger.Panic("failed to flush log buffer", zap.Error(err))
+		}
+	}()
+
 	logger.Info("govanity is initializing...")
 
 	background := context.Background()
@@ -35,6 +42,7 @@ func main() {
 	}
 
 	var h Handler
+	h.logger = logger
 
 	h.templates = make(map[string]*template.Template)
 	homeTmpl, err := template.ParseFiles("cmd/internal/templates/home.gotmpl")
@@ -66,7 +74,10 @@ func main() {
 	http.Handle("/", r)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("cmd/internal/static"))))
 
-	http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
+	if err != nil {
+		logger.Panic("failed to serve http", zap.Error(err))
+	}
 }
 
 func (h Handler) HomeHandler(writer http.ResponseWriter, request *http.Request) {
@@ -79,7 +90,10 @@ func (h Handler) HomeHandler(writer http.ResponseWriter, request *http.Request) 
 		Title: h.settings.Domain,
 		Repos: repos,
 	}
-	h.templates["home"].Execute(writer, homeData)
+	err := h.templates["home"].Execute(writer, homeData)
+	if err != nil {
+		h.logger.Error("couldn't execute home template", zap.Error(err))
+	}
 }
 
 func (h Handler) VanityHandler(writer http.ResponseWriter, request *http.Request) {
@@ -93,12 +107,14 @@ func (h Handler) VanityHandler(writer http.ResponseWriter, request *http.Request
 			GoSource: h.CreateGoSourceMetaTag(v),
 		}
 
-		h.templates["repo"].Execute(writer, repoData)
+		err := h.templates["repo"].Execute(writer, repoData)
+		if err != nil {
+			h.logger.Error("couldn't execute repo template", zap.Error(err))
+		}
 		return
 	}
 	writer.WriteHeader(http.StatusNotFound)
 	fmt.Fprint(writer, `{"found":false}`)
-	return
 }
 
 func (h Handler) CreateGoImportMetaTag(repo github.CondensedRepository) string {
