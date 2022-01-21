@@ -3,5 +3,5 @@ username: ""
 github-pat: ""
 protocol: "http"
 domain: "localhost:8080"
-repos: 
+repos:
   - ""
