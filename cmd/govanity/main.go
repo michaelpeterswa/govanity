@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/michaelpeterswa/govanity/cmd/internal/github"
-	"github.com/michaelpeterswa/govanity/cmd/internal/settings"
-	"github.com/michaelpeterswa/govanity/cmd/internal/structs"
-	"github.com/michaelpeterswa/govanity/cmd/internal/templates"
+	"github.com/michaelpeterswa/govanity/internal/github"
+	"github.com/michaelpeterswa/govanity/internal/settings"
+	"github.com/michaelpeterswa/govanity/internal/structs"
+	"github.com/michaelpeterswa/govanity/internal/templates"
 	"go.uber.org/zap"
 )
 
@@ -45,13 +45,13 @@ func main() {
 	h.logger = logger
 
 	h.templates = make(map[string]*template.Template)
-	homeTmpl, err := template.ParseFiles("cmd/internal/templates/home.gotmpl")
+	homeTmpl, err := template.ParseFiles("internal/templates/home.gotmpl")
 	if err != nil {
 		logger.Error("error parsing home template", zap.Error(err))
 	}
 	h.templates["home"] = homeTmpl
 
-	repoTmpl, err := template.ParseFiles("cmd/internal/templates/repo.gotmpl")
+	repoTmpl, err := template.ParseFiles("internal/templates/repo.gotmpl")
 	if err != nil {
 		logger.Error("error parsing repo template", zap.Error(err))
 	}

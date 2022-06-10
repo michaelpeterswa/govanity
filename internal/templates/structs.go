@@ -1,6 +1,6 @@
 package templates
 
-import "github.com/michaelpeterswa/govanity/cmd/internal/github"
+import "github.com/michaelpeterswa/govanity/internal/github"
 
 type Homepage struct {
 	Title string

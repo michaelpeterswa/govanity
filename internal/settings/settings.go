@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/michaelpeterswa/govanity/cmd/internal/structs"
+	"github.com/michaelpeterswa/govanity/internal/structs"
 	"gopkg.in/yaml.v2"
 )
 

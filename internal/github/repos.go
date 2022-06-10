@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/michaelpeterswa/govanity/cmd/internal/structs"
-	"github.com/michaelpeterswa/govanity/cmd/internal/utils"
+	"github.com/michaelpeterswa/govanity/internal/structs"
+	"github.com/michaelpeterswa/govanity/internal/utils"
 )
 
 type GitHubRepositories struct {
