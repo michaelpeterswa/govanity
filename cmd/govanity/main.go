@@ -102,6 +102,7 @@ func (h Handler) VanityHandler(writer http.ResponseWriter, request *http.Request
 
 	if v, ok := h.valids[repo]; ok {
 		repoData := templates.Repo{
+			Title:    h.settings.Domain,
 			Repo:     v,
 			GoImport: h.CreateGoImportMetaTag(v),
 			GoSource: h.CreateGoSourceMetaTag(v),

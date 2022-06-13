@@ -8,6 +8,8 @@ type Homepage struct {
 }
 
 type Repo struct {
+	Title string
+
 	Repo github.CondensedRepository
 
 	GoImport string

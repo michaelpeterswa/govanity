@@ -14,7 +14,7 @@ FROM alpine:latest
 
 WORKDIR /root/
 COPY --from=stage-compile /go/src/app/govanity ./
-COPY --from=stage-compile /go/src/app/cmd/internal/templates/*.gotmpl ./cmd/internal/templates/
+COPY --from=stage-compile /go/src/app/internal/templates/*.gotmpl ./internal/templates/
 
 RUN apk --no-cache add ca-certificates
 

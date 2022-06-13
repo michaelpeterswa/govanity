@@ -249,7 +249,7 @@ func (gh *GitHubRepository) CondenseGitHubRepository(settings structs.Settings) 
 		License: CLicense{
 			Name: gh.License.Name,
 		},
-		GoVanityLink: fmt.Sprintf("%s://%s/%s", settings.Protocol, settings.Domain, gh.Name),
+		GoVanityLink: fmt.Sprintf("/%s", gh.Name),
 	}
 }
 
