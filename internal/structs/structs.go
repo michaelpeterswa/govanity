@@ -6,3 +6,7 @@ type Settings struct {
 	Domain    string   `yaml:"domain"`
 	Repos     []string `yaml:"repos"`
 }
+
+type Healthcheck struct {
+	IsHealthy bool `json:"is_healthy"`
+}

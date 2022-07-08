@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -69,6 +70,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", h.HomeHandler)
+	r.HandleFunc("/healthcheck", h.HealthcheckHandler)
 	r.HandleFunc("/{repo}", h.VanityHandler)
 
 	http.Handle("/", r)
@@ -131,4 +133,20 @@ func (h Handler) CreateGoSourceMetaTag(repo github.CondensedRepository) string {
 	link2 := fmt.Sprintf("https://github.com/%s/tree/master{/dir}", repo.FullName)
 	link3 := fmt.Sprintf("https://github.com/%s/blob/master{/dir}/{file}#L{line}", repo.FullName)
 	return fmt.Sprintf("%s %s %s %s", source, link1, link2, link3)
+}
+
+func (h Handler) HealthcheckHandler(writer http.ResponseWriter, request *http.Request) {
+	health := structs.Healthcheck{
+		IsHealthy: true,
+	}
+
+	writer.WriteHeader(http.StatusOK)
+	data, err := json.MarshalIndent(health, "", "/t")
+	if err != nil {
+		return
+	}
+	_, err = writer.Write(data)
+	if err != nil {
+		return
+	}
 }
