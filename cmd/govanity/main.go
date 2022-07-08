@@ -141,7 +141,7 @@ func (h Handler) HealthcheckHandler(writer http.ResponseWriter, request *http.Re
 	}
 
 	writer.WriteHeader(http.StatusOK)
-	data, err := json.MarshalIndent(health, "", "/t")
+	data, err := json.MarshalIndent(health, "", "\t")
 	if err != nil {
 		return
 	}
